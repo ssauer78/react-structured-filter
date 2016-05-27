@@ -1,52 +1,61 @@
-/** @jsx React.DOM */
+import React, { PropTypes } from 'react';
+import Popover from './popover';
+import Calendar from './calendar';
+import DateInput from './date_input';
 
-var React = require('react/addons');
+class DatePicker extends React.Component {
+  static propTypes = {
+    onChange: PropTypes.func,
+    onKeyDown: PropTypes.func,
+    placeholderText: PropTypes.string,
+    selected: PropTypes.object.isRequired,
+    dateFormat: PropTypes.string.isRequired,
+    minDate: PropTypes.string,
+    maxDate: PropTypes.string
+  };
 
-var Popover   = require('./popover');
-var DateUtil  = require('./util/date');
-var Calendar  = require('./calendar');
-var DateInput = require('./date_input');
+  constructor (props) {
+    super(props);
+    this.handleFocus = this.handleFocus.bind(this);
+    this.hideCalendar = this.hideCalendar.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
+    this.setSelected = this.setSelected.bind(this);
+    this.onInputClick = this.onInputClick.bind(this);
+    this.calendar = this.calendar.bind(this);
 
-var DatePicker = React.createClass({
-  propTypes: {
-    onChange: React.PropTypes.func,
-    onKeyDown: React.PropTypes.func
-  },
-
-  getInitialState: function() {
-    return {
+    this.state = {
       focus: true
     };
-  },
+  }
 
-  handleFocus: function() {
+  handleFocus () {
     this.setState({
       focus: true
     });
-  },
+  }
 
-  hideCalendar: function() {
-      this.setState({
-        focus: false
-      });
-  },
+  hideCalendar () {
+    this.setState({
+      focus: false
+    });
+  }
 
-  handleSelect: function(date) {
+  handleSelect (date) {
     this.hideCalendar();
     this.setSelected(date);
-  },
+  }
 
-  setSelected: function(date) {
+  setSelected (date) {
     this.props.onChange(date.moment());
-  },
+  }
 
-  onInputClick: function() {
+  onInputClick () {
     this.setState({
       focus: true
     });
-  },
+  }
 
-  calendar: function() {
+  calendar () {
     if (this.state.focus) {
       return (
         <Popover>
@@ -59,13 +68,13 @@ var DatePicker = React.createClass({
         </Popover>
       );
     }
-  },
+  }
 
-  render: function() {
+  render () {
     return (
       <div>
         <DateInput
-          ref="dateinput"
+          ref='dateinput'
           date={this.props.selected}
           dateFormat={this.props.dateFormat}
           focus={this.state.focus}
@@ -80,6 +89,6 @@ var DatePicker = React.createClass({
       </div>
     );
   }
-});
+}
 
-module.exports = DatePicker;
+export default DatePicker;

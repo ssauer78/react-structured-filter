@@ -1,17 +1,25 @@
-/** @jsx React.DOM */
+import React, { PropTypes } from 'react';
+import moment from 'moment';
+import classNames from 'classnames';
 
-var React = require('react/addons');
-var moment = require('moment');
+class Day extends React.Component {
+  static propTypes = {
+    disabled: PropTypes.bool.isRequired,
+    onClick: PropTypes.func.isRequired,
+    day: PropTypes.object.isRequired,
+    selected: PropTypes.object.isRequired
+  };
 
-var Day = React.createClass({
-  handleClick: function(event) {
-    if (this.props.disabled) return;
+  handleClick (event) {
+    if (this.props.disabled) {
+      return;
+    }
 
     this.props.onClick(event);
-  },
+  }
 
-  render: function() {
-    classes = React.addons.classSet({
+  render () {
+    let classes = classNames({
       'datepicker__day': true,
       'datepicker__day--disabled': this.props.disabled,
       'datepicker__day--selected': this.props.day.sameDay(this.props.selected),
@@ -19,11 +27,11 @@ var Day = React.createClass({
     });
 
     return (
-      <div className={classes} onClick={this.handleClick}>
+      <div className={classes} onClick={this.handleClick.bind(this)}>
         {this.props.day.day()}
       </div>
     );
   }
-});
+}
 
-module.exports = Day;
+export default Day;

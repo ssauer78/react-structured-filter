@@ -31,7 +31,7 @@ gulp.task('browserify', function() {
     console.log('Updated!', (Date.now() - updateStart) + 'ms');
   })
   .bundle() // Create the initial bundle when starting the task
-  .pipe(source('main.js'))
+  .pipe(source('ReactStrcuturedFilter.jsx'))
   .pipe(gulp.dest('example/demo'));
 });
 

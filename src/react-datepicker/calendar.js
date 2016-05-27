@@ -1,45 +1,59 @@
-/** @jsx React.DOM */
-var React = require('react/addons');
+import React, { PropTypes } from 'react';
+import Day from './day';
+import DateUtil from './util/date';
+import moment from 'moment';
+import listensToClickOutside from 'react-onclickoutside/decorator';
 
-var Day = require('./day');
-var DateUtil = require('./util/date');
-var moment = require('moment');
+class Calendar extends React.Component {
+  static propTypes = {
+    hideCalendar: PropTypes.func.isRequired,
+    onSelect: PropTypes.func.isRequired,
+    minDate: PropTypes.object,
+    maxDate: PropTypes.object,
+    selected: PropTypes.object.isRequired
+  };
 
-var Calendar = React.createClass({
-  mixins: [require('react-onclickoutside')],
-
-  handleClickOutside: function() {
-    this.props.hideCalendar();
-  },
-
-  getInitialState: function() {
-    return {
+  constructor (props) {
+    super(props);
+    this.handleClickOutside = this.handleClickOutside.bind(this);
+    this.increaseMonth = this.increaseMonth.bind(this);
+    this.decreaseMonth = this.decreaseMonth.bind(this);
+    this.weeks = this.weeks.bind(this);
+    this.handleDayClick = this.handleDayClick.bind(this);
+    this.renderWeek = this.renderWeek.bind(this);
+    this.renderDay = this.renderDay.bind(this);
+    this.days = this.days.bind(this);
+    this.state = {
       date: new DateUtil(this.props.selected).safeClone(moment())
     };
-  },
+  }
 
-  increaseMonth: function() {
+  handleClickOutside = (event) => {
+    this.props.hideCalendar();
+  };
+
+  increaseMonth () {
     this.setState({
       date: this.state.date.addMonth()
     });
-  },
+  }
 
-  decreaseMonth: function() {
+  decreaseMonth () {
     this.setState({
       date: this.state.date.subtractMonth()
     });
-  },
+  }
 
-  weeks: function() {
+  weeks () {
     return this.state.date.mapWeeksInMonth(this.renderWeek);
-  },
+  }
 
-  handleDayClick: function(day) {
+  handleDayClick (day) {
     this.props.onSelect(day);
-  },
+  }
 
-  renderWeek: function(weekStart, key) {
-    if(! weekStart.weekInMonth(this.state.date)) {
+  renderWeek (weekStart, key) {
+    if (!weekStart.weekInMonth(this.state.date)) {
       return;
     }
 
@@ -48,12 +62,12 @@ var Calendar = React.createClass({
         {this.days(weekStart)}
       </div>
     );
-  },
+  }
 
-  renderDay: function(day, key) {
-    var minDate = new DateUtil(this.props.minDate).safeClone(),
-        maxDate = new DateUtil(this.props.maxDate).safeClone(),
-        disabled = day.isBefore(minDate) || day.isAfter(maxDate);
+  renderDay (day, key) {
+    var minDate = new DateUtil(this.props.minDate).safeClone();
+    var maxDate = new DateUtil(this.props.maxDate).safeClone();
+    var disabled = day.isBefore(minDate) || day.isAfter(maxDate);
 
     return (
       <Day
@@ -64,42 +78,42 @@ var Calendar = React.createClass({
         selected={new DateUtil(this.props.selected)}
         disabled={disabled} />
     );
-  },
+  }
 
-  days: function(weekStart) {
+  days (weekStart) {
     return weekStart.mapDaysInWeek(this.renderDay);
-  },
+  }
 
-  render: function() {
+  render () {
     return (
-      <div className="datepicker">
-        <div className="datepicker__triangle"></div>
-        <div className="datepicker__header">
-          <a className="datepicker__navigation datepicker__navigation--previous"
-              onClick={this.decreaseMonth}>
+      <div className='datepicker'>
+        <div className='datepicker__triangle'></div>
+        <div className='datepicker__header'>
+          <a className='datepicker__navigation datepicker__navigation--previous'
+            onClick={this.decreaseMonth}>
           </a>
-          <span className="datepicker__current-month">
-            {this.state.date.format("MMMM YYYY")}
+          <span className='datepicker__current-month'>
+            {this.state.date.format('MMMM YYYY')}
           </span>
-          <a className="datepicker__navigation datepicker__navigation--next"
-              onClick={this.increaseMonth}>
+          <a className='datepicker__navigation datepicker__navigation--next'
+            onClick={this.increaseMonth}>
           </a>
           <div>
-            <div className="datepicker__day">Mo</div>
-            <div className="datepicker__day">Tu</div>
-            <div className="datepicker__day">We</div>
-            <div className="datepicker__day">Th</div>
-            <div className="datepicker__day">Fr</div>
-            <div className="datepicker__day">Sa</div>
-            <div className="datepicker__day">Su</div>
+            <div className='datepicker__day'>Mo</div>
+            <div className='datepicker__day'>Tu</div>
+            <div className='datepicker__day'>We</div>
+            <div className='datepicker__day'>Th</div>
+            <div className='datepicker__day'>Fr</div>
+            <div className='datepicker__day'>Sa</div>
+            <div className='datepicker__day'>Su</div>
           </div>
         </div>
-        <div className="datepicker__month">
+        <div className='datepicker__month'>
           {this.weeks()}
         </div>
       </div>
     );
   }
-});
+}
 
-module.exports = Calendar;
+export default listensToClickOutside(Calendar);
